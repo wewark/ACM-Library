@@ -16,10 +16,9 @@ vi cost;
 
 // Class for Tarjan Algorithm (Strongly connected components)
 // A class that represents an directed graph
-class Graph
-{
+class Graph {
 	int V;    // No. of vertices
-	list<int> *adj;    // A dynamic array of adjacency lists
+	vvi adj;    // A dynamic array of adjacency lists
 
 	// A Recursive DFS based function used by SCC()
 	// A recursive function that finds and prints strongly connected
@@ -33,27 +32,21 @@ class Graph
 	//           of SCC)
 	// stackMember[] --> bit/index array for faster check whether
 	//                  a node is in stack
-	void SCCUtil(int u, int disc[], int low[], stack<int> *st,
-		bool stackMember[])
-	{
+	void SCCUtil(int u, vi& disc, vi& low, stack<int>& st,
+		vb& stackMember) {
 		// A static variable is used for simplicity, we can avoid use
 		// of static variable by passing a pointer.
 		static int time = 0;
 
 		// Initialize discovery time and low value
 		disc[u] = low[u] = ++time;
-		st->push(u);
+		st.push(u);
 		stackMember[u] = true;
 
 		// Go through all vertices adjacent to this
-		list<int>::iterator i;
-		for (i = adj[u].begin(); i != adj[u].end(); ++i)
-		{
-			int v = *i;  // v is current adjacent of 'u'
-
-						 // If v is not visited yet, then recur for it
-			if (disc[v] == -1)
-			{
+		for (auto& v : adj[u]) {
+			// If v is not visited yet, then recur for it
+			if (disc[v] == -1) {
 				SCCUtil(v, disc, low, st, stackMember);
 
 				// Check if the subtree rooted with 'v' has a
@@ -65,66 +58,47 @@ class Graph
 			// Update low value of 'u' only of 'v' is still in stack
 			// (i.e. it's a back edge, not cross edge).
 			// Case 2 (per above discussion on Disc and Low value)
-			else if (stackMember[v] == true)
+			else if (stackMember[v])
 				low[u] = min(low[u], disc[v]);
 		}
 
 		// head node found, pop the stack and print an SCC
 		int w = 0;  // To store stack extracted vertices
-		if (low[u] == disc[u])
-		{
+		if (low[u] == disc[u]) {
 			comp.push_back({});
-			while (st->top() != u)
-			{
-				w = (int)st->top();
+			while (st.top() != u) {
+				w = (int)st.top();
 				//cout << w << " ";
-				comp.back().push_back(cost[w]);
+				comp.back().push_back(w);
 				stackMember[w] = false;
-				st->pop();
+				st.pop();
 			}
-			w = (int)st->top();
+			w = (int)st.top();
 			//cout << w << "\n";
-			comp.back().push_back(cost[w]);
+			comp.back().push_back(w);
 			stackMember[w] = false;
-			st->pop();
+			st.pop();
 		}
 	}
 
 public:
 	// Constructor
-	Graph(int V)
-	{
-		this->V = V;
-		adj = new list<int>[V];
-	}
-
-	// function to add an edge to graph
-	void addEdge(int v, int w)
-	{
-		adj[v].push_back(w);
+	Graph(vvi adj) {
+		this->V = adj.size();
+		this->adj = adj;
 	}
 
 	// prints strongly connected components
 	// The function to do DFS traversal. It uses SCCUtil()
-	void SCC()
-	{
-		int *disc = new int[V];
-		int *low = new int[V];
-		bool *stackMember = new bool[V];
-		stack<int> *st = new stack<int>();
-
-		// Initialize disc and low, and stackMember arrays
-		for (int i = 0; i < V; i++)
-		{
-			disc[i] = NIL;
-			low[i] = NIL;
-			stackMember[i] = false;
-		}
+	void SCC() {
+		vi disc(V, -1), low(V, -1);
+		vb stackMember(V);
+		stack<int> st;
 
 		// Call the recursive helper function to find strongly
 		// connected components in DFS tree with vertex 'i'
 		for (int i = 0; i < V; i++)
-			if (disc[i] == NIL)
+			if (disc[i] == -1)
 				SCCUtil(i, disc, low, st, stackMember);
 	}
 };
