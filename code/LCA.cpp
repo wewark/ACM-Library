@@ -21,7 +21,7 @@ vvi adj, P;
 
 void initLCA() {
 	//we initialize every element in P with -1
-	P.assign(n, vi(ceil(log2(n)), -1));
+	P.assign(n, vi(ceil(log2(n) + 1), -1));
 
 	//the first ancestor of every node i is prnt[i]
 	for (int i = 0; i < n; i++)
