@@ -33,11 +33,11 @@ Step 2:
 Add a edge from vertex 'bn' to 'an' in existing graph, now for all vertices (indegree==outdegree) holds true. ( Time Complexity : O( 1 ) )
 
 Step 3:
-Try to find Euler cycle in this modified graph using HIERHOLZER’S ALGORITHM. ( Time Complexity : O( V+E ) )
+Try to find Euler cycle in this modified graph using HIERHOLZER'S ALGORITHM. ( Time Complexity : O( V+E ) )
 a) Choose any vertex v and push it onto a stack. Initially all edges are unmarked.
 b) While the stack is nonempty, look at the top vertex, u, on the stack. If u has an unmarked incident edge, say, to a vertex w, then push w onto the stack and mark the edge uw. On the other hand, if u has no unmarked incident edge, then pop u off the stack and print it.
 c) When the stack is empty, you will have printed a sequence of vertices that correspond to an Eulerian circuit.
-Look into this Blog for better explanation of HIERHOLZER’S ALGORITHM .
+Look into this Blog for better explanation of HIERHOLZER'S ALGORITHM .
 
 Step 4:
 Check if cycle so printed is sufficient number of edges included or not. If not then original graph might be disconnected and Euler Path can't exist in this case.
@@ -49,8 +49,7 @@ In the cycle so determined in Step 3, remove a edge from 'bn' to 'an', now start
 struct Edge;
 typedef list<Edge>::iterator iter;
 
-struct Edge
-{
+struct Edge {
 	int next_vertex;
 	iter reverse_edge;
 
@@ -65,10 +64,8 @@ list<Edge> adj[max_vertices];		// adjacency list
 
 vector<int> path;
 
-void find_path(int v)
-{
-	while (adj[v].size() > 0)
-	{
+void find_path(int v) {
+	while (adj[v].size() > 0) {
 		int vn = adj[v].front().next_vertex;
 		adj[vn].erase(adj[v].front().reverse_edge);
 		adj[v].pop_front();
@@ -77,8 +74,7 @@ void find_path(int v)
 	path.push_back(v);
 }
 
-void add_edge(int a, int b)
-{
+void add_edge(int a, int b) {
 	adj[a].push_front(Edge(b));
 	iter ita = adj[a].begin();
 	adj[b].push_front(Edge(a));
